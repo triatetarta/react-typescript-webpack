@@ -1,46 +1,47 @@
-const path = require("path");
-const Dotenv = require("dotenv-webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require('path')
+const Dotenv = require('dotenv-webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
-const isDevelopment = process.env.NODE_ENV !== "production";
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 module.exports = {
-  mode: isDevelopment ? "development" : "production",
-  entry: "./src/index.tsx",
+  mode: isDevelopment ? 'development' : 'production',
+  entry: './src/index.tsx',
   output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "bundle.js",
-    assetModuleFilename: "images/[hash].[ext][query]",
+    path: path.resolve(__dirname, './dist'),
+    filename: 'bundle.js',
+    assetModuleFilename: 'images/[hash].[ext][query]',
   },
   optimization: {
     minimize: !isDevelopment,
     minimizer: [new TerserPlugin()],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js"],
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   module: {
     rules: [
       {
         test: /\.(?:ico|gif|png|jpe?g)$/i,
-        type: "asset/resource",
+        type: 'asset/resource',
       },
       {
         test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
-        type: "asset/inline",
+        type: 'asset/inline',
       },
       {
         test: /\.css$/i,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: { publicPath: "" },
+            options: { publicPath: '' },
           },
-          "css-loader",
-          "postcss-loader",
+          'css-loader',
+          'postcss-loader',
         ],
       },
       {
@@ -48,7 +49,7 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: "babel-loader",
+            loader: 'babel-loader',
             options: {
               cacheDirectory: true,
             },
@@ -61,15 +62,20 @@ module.exports = {
     new Dotenv(),
     new MiniCssExtractPlugin(),
     new CopyPlugin({
-      patterns: [{ from: "src", to: "dist" }],
+      patterns: [{ from: 'src', to: 'dist' }],
     }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html",
+      template: './public/index.html',
+    }),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx', 'ts', 'tsx'],
+      failOnError: true,
+      failOnWarning: false,
     }),
   ],
   devServer: {
     proxy: {
-      "/api": "http://localhost:5000",
+      '/api': 'http://localhost:5000',
     },
     client: {
       overlay: {
@@ -77,7 +83,7 @@ module.exports = {
       },
     },
     static: {
-      directory: path.resolve(__dirname, "./dist"),
+      directory: path.resolve(__dirname, './dist'),
     },
     compress: true,
     port: 3000,
@@ -85,4 +91,4 @@ module.exports = {
     open: true,
     historyApiFallback: true,
   },
-};
+}
