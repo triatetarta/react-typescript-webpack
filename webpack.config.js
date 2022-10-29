@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -60,6 +61,7 @@ module.exports = {
   },
   plugins: [
     new Dotenv(),
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
     new CopyPlugin({
       patterns: [{ from: 'src', to: 'dist' }],
